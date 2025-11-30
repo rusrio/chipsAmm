@@ -46,8 +46,25 @@ contract CoreTest is Test {
     }
 
     function test_aliceCreatePoolThenAddLiquidity() external {
-        vm.prank(alice);
+
+        vm.startPrank(deployer);
+        currency0.mint(alice, 10000e18);
+        currency1.mint(alice, 10000e18);
+        vm.stopPrank();
+
+        vm.startPrank(alice);
+
+        ERC20(currency0).approve(address(coreAmm), 10000e18);
+        ERC20(currency1).approve(address(coreAmm), 10000e18);
+
+        coreAmm.deposit(address(currency0), 1000e18);
+        coreAmm.deposit(address(currency1), 1000e18);
+
         coreAmm.createPool(address(currency0), address(currency1), 1e18, 1e18);
+        coreAmm.addLiquidity(coreAmm.poolIdSequencer()-1, 5e18, 5e18);
+
+        vm.stopPrank();
+        poolLogger(coreAmm.poolIdSequencer()-1);
     }
 
     function test_aliceDeposit() external {

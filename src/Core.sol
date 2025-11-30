@@ -118,7 +118,7 @@ contract Core {
         uint256 numerator = reserveIn * amountOut * 1000;
         uint256 denominator = (reserveOut - amountOut) * 998; // 0.2% fee
 
-        // $$AmountIn = \frac{ReserveIn \cdot AmountOut \cdot 1000}{(ReserveOut - AmountOut) \cdot 997} + 1$$
+        // $$AmountIn = \frac{ReserveIn \cdot AmountOut \cdot 1000}{(ReserveOut - AmountOut) \cdot 997} + 1$$ (Markdown format)
         // +1 for safety, solidity trunks to 0
         amountIn = (numerator / denominator) + 1;
 
@@ -145,13 +145,15 @@ contract Core {
     // verify xy = k
 }
     function addLiquidity(uint256 poolId, uint256 currency0Amount, uint256 currency1Amount) public poolChecker(poolId) {
-        Pool memory pool = idToPool[poolId];
+        Pool storage pool = idToPool[poolId];
         uint256 c0Id = currencyToCurrencyId[pool.currency0];
         uint256 c1Id = currencyToCurrencyId[pool.currency1];
         userChipsBalance[msg.sender][c0Id] -= currency0Amount;
         userChipsBalance[msg.sender][c1Id] -= currency1Amount;
         userChipsBalance[address(this)][c0Id] += currency0Amount;
         userChipsBalance[address(this)][c1Id] += currency1Amount;
+        pool.reserve0 += currency0Amount;
+        pool.reserve1 += currency1Amount;
     }
 
     function createPool(
@@ -163,8 +165,6 @@ contract Core {
         external checkOrCreateCurrencyId(_currency0) checkOrCreateCurrencyId(_currency1) {
         // currencyToCurrencyId[_currency0]
         Pool storage newPool = idToPool[poolIdSequencer];
-        newPool.reserve0 = _reserve0;
-        newPool.reserve1 = _reserve1;
         newPool.currency0 = _currency0;
         newPool.currency1 = _currency1;
         addLiquidity(poolIdSequencer, _reserve0, _reserve1);

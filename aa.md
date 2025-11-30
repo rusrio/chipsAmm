@@ -1,0 +1,1 @@
+$$AmountIn = \frac{ReserveIn \cdot AmountOut \cdot 1000}{(ReserveOut - AmountOut) \cdot 997} + 1$$
