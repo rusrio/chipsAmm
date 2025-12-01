@@ -8,7 +8,7 @@ graph TD
     User((User))
     ERC20[(ERC-20 Contract)]
     AMM[Core.sol]
-    Pool{"Liquidity Pool" inside Core.sol} 
+    Pool{Core.sol internal balances} 
 
     %% Deposit
     User -- 1. Approve & Deposit ERC20 --> AMM
