@@ -1,66 +1,27 @@
-## Foundry
+# ChipsAMM
+## ChipsAMM is a gas-optimized Automated Market Maker (AMM) inspired by (but not standarly implemented) the ERC-6909 Minimal Multi-Token Interface.
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
+The protocol functions as a wrapping layer for standard ERC-20 tokens. When users deposit assets, they receive an internal balance representation ("Chips"). This architecture allows the AMM to handle liquidity provision and swaps by simply updating internal accounting ledgers, avoiding the gas overhead associated with multiple external transferFrom calls required by traditional AMMs.
 
-Foundry consists of:
+```mermaid
+graph TD
+    User((User))
+    ERC20[(ERC-20 Contract)]
+    AMM[Core.sol]
+    Pool{Liquidity Pool}
 
-- **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
-- **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
-- **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
-- **Chisel**: Fast, utilitarian, and verbose solidity REPL.
+    %% Deposit
+    User -- 1. Approve & Deposit ERC20 --> AMM
+    AMM -- 2. Mint Chip (ERC20 ID) --> User
 
-## Documentation
+    %% Swap
+    User -- 4. Swap Chip A for Chip B --> Pool
+    Pool -- 5. Update Internal Balances --> User
+    subgraph "Gas Efficient execution"
+    Pool
+    end
 
-https://book.getfoundry.sh/
-
-## Usage
-
-### Build
-
-```shell
-$ forge build
-```
-
-### Test
-
-```shell
-$ forge test
-```
-
-### Format
-
-```shell
-$ forge fmt
-```
-
-### Gas Snapshots
-
-```shell
-$ forge snapshot
-```
-
-### Anvil
-
-```shell
-$ anvil
-```
-
-### Deploy
-
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
-
-### Cast
-
-```shell
-$ cast <subcommand>
-```
-
-### Help
-
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
-```
+    %% Withdraw
+    User -- 6. Withdraw Chip B --> AMM
+    AMM -- 7. Burn Chip (ID B) --> User
+    AMM -- 8. Transfer Token B --> User
