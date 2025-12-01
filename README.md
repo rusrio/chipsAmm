@@ -15,13 +15,13 @@ graph TD
     AMM -- 2. Mint Chip (ERC20 ID) --> User
 
     %% Swap
-    User -- 4. Swap Chip A for Chip B --> Pool
-    Pool -- 5. Update Internal Balances --> User
+    User -- 3. Swap Chip A for Chip B --> Pool
+    Pool -- 4. Update Internal Balances --> User
     subgraph "Gas Efficient execution"
     Pool
     end
 
     %% Withdraw
-    User -- 6. Withdraw Chip B --> AMM
-    AMM -- 7. Burn Chip (ID B) --> User
-    AMM -- 8. Transfer Token B --> User
+    User -- 5. Withdraw Chip B --> AMM
+    AMM -- 6. Burn Chip (ID B) --> User
+    AMM -- 7. Transfer Token B --> User
